@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { chromium } from 'playwright-core';
 import { waitForPreview } from '../support/preview-ready.mjs';
-const preview = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'preview', '--port', '4275'], { stdio: 'pipe' });
+const preview = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'preview', '--host', '127.0.0.1', '--port', '4275'], { stdio: 'pipe' });
 let browser;
 const passed = [];
 try {
