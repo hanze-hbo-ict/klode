@@ -173,7 +173,7 @@ Agreed error handling:
   Dark → System. Show only the current mode's local icon. Its accessible name/title
   convey current mode and next action; retain visible focus. System follows live OS
   changes and manual choices override them. No external icon CDN. Switching theme
-  preserves source, execution and transcript.
+  preserves source, selection, undo history, execution and transcript.
 - **FR-016**: Present a general online Python editor. Remove ans-specific transfer
   instructions, “Runs in your browser” and the hardcoded Python version. Retain
   “No code completion or AI assistance” and both approved taglines; add a subtle

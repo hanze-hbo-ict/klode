@@ -6,8 +6,8 @@ import { createInput } from './input.js';
 import { createExecutionControl } from './execution.js';
 import { createRuntime } from './runtime/client.js';
 const $ = (id) => document.getElementById(id);
-createTheme($('theme'));
 const editor = createEditor($('editor'), '# Write your Python code here\nprint("Hello, world!")\n', () => {});
+createTheme($('theme'), editor.setTheme);
 const output = createOutput($('output'), $('error'));
 const labels = { loading: 'Loading Python…', ready: 'Ready', running: 'Running', 'waiting-for-input': 'Waiting for input', stopping: 'Stopping…', failed: 'Unavailable' };
 const input = createInput($('input-form'), $('answer'), (identity, line) => {
