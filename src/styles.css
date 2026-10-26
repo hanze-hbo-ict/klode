@@ -10,3 +10,5 @@
 
 /* Keep footer content clear of the fixed hosting badge, including narrow views. */
 .app-footer{padding-right:200px}
+
+.editor-keys{margin:0 14px 10px;color:var(--muted);font-size:11px;line-height:1.5}

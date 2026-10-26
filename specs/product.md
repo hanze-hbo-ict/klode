@@ -107,7 +107,7 @@ before an auto-inserted closer skips it; Backspace removes an empty pair. Avoid
 unwanted pairing in Python comments/string text. The product owner subsequently
 approved quote closing in the same item: retain native Python-aware single/double,
 prefix and triple-quote handling, closer skipping and empty-pair deletion. Keep matching and mismatch
-indications readable in both themes, normal browser Tab navigation, exact copying
+indications readable in both themes, the keyboard navigation agreement below, exact copying
 and undo/redo. The footer remains “No code completion or AI assistance”.
 
 ## Footer placement — 2026-10-23 (#34)
@@ -115,3 +115,12 @@ and undo/redo. The footer remains “No code completion or AI assistance”.
 Group the repository link and “No code completion or AI assistance” at the left
 of the footer. Allow natural wrapping on narrow screens and reserve space at the
 right so the hosting badge does not obscure either item. Keep text/link unchanged.
+
+## Editor Tab decision — 2026-10-26 (#36)
+
+Tab indents the current or selected lines by four spaces; Shift+Tab dedents.
+This supersedes the earlier ordinary-Tab focus-navigation agreement. Escape then
+Tab provides a temporary keyboard escape route from the editor using supported
+CodeMirror behaviour. Preserve Enter indentation, undo/copy and bracket/quote help.
+A concise accessible hint may be shown provisionally; its wording, placement and
+continued inclusion require the product owner’s final judgment on the preview.

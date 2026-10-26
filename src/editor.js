@@ -3,7 +3,7 @@ import { EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLi
 import { pythonLanguage } from '@codemirror/lang-python';
 import { syntaxHighlighting, defaultHighlightStyle, HighlightStyle, indentOnInput, indentUnit, bracketMatching, syntaxTree } from '@codemirror/language';
 import { closeBrackets, closeBracketsKeymap } from '@codemirror/autocomplete';
-import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
+import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirror/commands';
 
 const palette = { '#404740': 'var(--muted)', '#708': 'var(--syntax-keyword)', '#219': 'var(--syntax-number)', '#164': 'var(--syntax-name)', '#a11': 'var(--syntax-string)', '#e40': 'var(--syntax-number)', '#00f': 'var(--syntax-name)', '#30a': 'var(--syntax-name)', '#085': 'var(--syntax-name)', '#167': 'var(--syntax-name)', '#256': 'var(--syntax-name)', '#00c': 'var(--syntax-name)', '#940': 'var(--muted)', '#f00': 'var(--error)' };
 const highlighting = HighlightStyle.define(defaultHighlightStyle.specs.map((spec) => ({ ...spec, ...(spec.color ? { color: palette[spec.color] } : {}) })));
@@ -31,15 +31,15 @@ const bracketData = Prec.highest(EditorState.languageData.of((state, pos) => {
 }));
 export function createEditor(parent, source, onChange) {
   // Use only the language parser, not python()'s completion-support extension.
-  // Tab retains browser focus navigation. Enter uses the default indent command.
+  // Tab indents; CodeMirror provides Escape-then-Tab focus navigation.
   const view = new EditorView({
     parent,
     state: EditorState.create({ doc: source, extensions: [
       pythonLanguage, syntaxHighlighting(highlighting), indentOnInput(), indentUnit.of('    '),
       bracketData, closeBrackets(), bracketMatching(),
       lineNumbers(), highlightActiveLineGutter(), highlightActiveLine(), drawSelection(), history(),
-      keymap.of([...closeBracketsKeymap, ...defaultKeymap, ...historyKeymap]),
-      EditorView.contentAttributes.of({ 'aria-label': 'main.py Python source', spellcheck: 'false', autocorrect: 'off', autocapitalize: 'off' }),
+      keymap.of([indentWithTab, ...closeBracketsKeymap, ...defaultKeymap, ...historyKeymap]),
+      EditorView.contentAttributes.of({ 'aria-label': 'main.py Python source', 'aria-describedby': 'editor-keys', spellcheck: 'false', autocorrect: 'off', autocapitalize: 'off' }),
       EditorView.updateListener.of((update) => { if (update.docChanged) onChange(update.state.doc.toString()); }),
     ] }),
   });
