@@ -27,8 +27,15 @@ try {
   // Inspect the rendered PNG, not just CSS: an opaque active-line decoration can
   // completely hide a correctly coloured selection layer drawn underneath it.
   async function selectionPixels() {
-    const selected = await page.locator('.cm-selectionBackground').last().boundingBox();
+    // CodeMirror measures/redraws its layers on animation frames, and reuses
+    // marker DOM nodes without guaranteeing their document order.
+    await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
     const line = await page.locator('.cm-activeLine').boundingBox();
+    const ranges = await page.locator('.cm-selectionBackground').evaluateAll(nodes => nodes.map(node => {
+      const r = node.getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: r.height };
+    }));
+    const selected = ranges.find(r => r.y >= line.y - 1 && r.y < line.y + line.height);
+    assert.ok(selected, `Selection must cover the active row: ${JSON.stringify({ line, ranges })}`);
     const points = [{ x: selected.x + selected.width - 7, y: selected.y + 1 }, { x: line.x + line.width - 12, y: selected.y + 1 }];
     const png = await page.screenshot();
     return page.evaluate(async ({ data, points }) => {
