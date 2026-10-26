@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { chromium } from 'playwright-core';
 import { waitForPreview } from '../support/preview-ready.mjs';
+import { waitForEditorTheme } from '../support/editor-appearance.mjs';
 
 const origin = 'http://127.0.0.1:4275';
 const preview = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'preview', '--host', '127.0.0.1', '--port', '4275'], { stdio: 'pipe' });
@@ -74,7 +75,7 @@ try {
   assert.equal(await source(), 'value = "done"()');
   passed.push('comments/string text remain literal; quotes/prefixes/triple quotes close, skip and delete; code after string still pairs');
   for (const mode of ['light', 'dark']) {
-    await page.evaluate((mode) => { document.documentElement.dataset.theme = mode; }, mode);
+    for (let i = 0; i < 3 && await page.locator('#theme').getAttribute('data-theme-choice') !== mode; i++) await page.locator('#theme').click();
     await setSource('(x)'); await keyboard.press('ArrowLeft');
     await page.waitForFunction(() => document.querySelectorAll('.cm-matchingBracket').length === 2);
     assert.deepEqual(await page.locator('.cm-matchingBracket').allTextContents(), ['(', ')']);
@@ -90,6 +91,20 @@ try {
     assert.equal(mismatch.outline, 'solid'); assert.equal(mismatch.decoration, 'wavy'); assert.notEqual(mismatch.background, mismatch.text);
   }
   passed.push('matching and mismatching indications in both themes, with visible outline and mismatch underline');
+  const originalEditor = await editor.elementHandle();
+  await setSource('value = 42'); await page.waitForTimeout(600);
+  await keyboard.press('End'); await keyboard.type(' # note'); await keyboard.press('Home');
+  for (let i = 0; i < 5; i++) await keyboard.press('Shift+ArrowRight');
+  for (let i = 0; i < 3; i++) {
+    await page.locator('#theme').click();
+    await waitForEditorTheme(page);
+  }
+  await editor.focus(); await keyboard.press('ControlOrMeta+c');
+  assert.equal(await page.evaluate(() => navigator.clipboard.readText()), 'value');
+  assert.equal(await originalEditor.evaluate(node => node === document.querySelector('.cm-content')), true);
+  await keyboard.press('ControlOrMeta+z'); assert.equal(await source(), 'value = 42');
+  await keyboard.press('ControlOrMeta+y'); assert.equal(await source(), 'value = 42 # note');
+  passed.push('native editor theme follows app mode without replacing editor, selection or undo history');
   await page.waitForFunction(() => document.querySelector('#status').dataset.state === 'ready');
   const broken = 'if True:\nprint("hallo")';
   const fixed = 'if True:\n    print("hallo")';
@@ -123,7 +138,7 @@ try {
   assert.equal(await page.locator('#editor-keys').count(), 0);
   for (const width of [360, 1280]) for (const mode of ['light', 'dark']) {
     await page.setViewportSize({ width, height: 640 });
-    await page.evaluate((mode) => { document.documentElement.dataset.theme = mode; }, mode);
+    for (let i = 0; i < 3 && await page.locator('#theme').getAttribute('data-theme-choice') !== mode; i++) await page.locator('#theme').click();
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
     await page.screenshot({ path: `/tmp/klode-tab-${width}-${mode}.png`, fullPage: true });
   }

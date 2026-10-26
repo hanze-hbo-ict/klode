@@ -11,7 +11,7 @@ explains how the current design meets them and what maintaining it costs.
 | Choice | Rationale and maintenance boundary | Current disposition |
 | --- | --- | --- |
 | Vite | Resolves package/CSS imports, bundles the worker and emits static assets. A custom server replaces only serving; a fair comparison includes the remaining build responsibilities. | Retain; no build-tool replacement in #40. |
-| Syntax highlighting | Map semantic categories such as keywords and strings to a deliberate theme. Mapping another theme's exact hex values ties semantics to upstream presentation. | Existing implementation remains; semantic theming/dark-mode integration is #42. |
+| Syntax highlighting | Map semantic categories such as keywords and strings to a deliberate theme. Mapping another theme's exact hex values ties semantics to upstream presentation. | Semantic tags and a theme compartment implemented in #42; palette remains local. |
 | Python bracket policy | Current custom filtering satisfies agreed literal/comment behaviour, but depends on parser node names and error recovery. Native defaults differ. | #43 compares options; an owner decision precedes any changed behaviour. |
 | Worker/input/output protocol | Shared input supports synchronous Python input without blocking the UI. Worker termination, identities and output backpressure support responsive Stop, stale-event rejection and lossless finite output. | Preserve these requirements; implementation details may change only with evidence that the same behaviour holds. |
 | Runtime metadata and generated assets | Repeated version literals can drift; old generated versions can leak into local build output. Authoritative inputs and clean generation reduce that responsibility. | #44 addresses packaging/configuration without upgrading the runtime. |
@@ -41,3 +41,29 @@ build/development configuration and upgrade work. Consolidate shared inputs wher
 practical; check unavoidable copies consumed by external tools. Format source for
 review and let the build minimise production assets. Preserve meaningful regression
 tests instead of growing or deleting tests to meet a numerical target.
+
+## CodeMirror theme boundary (#42)
+
+The app resolves System/Light/Dark and passes the resolved mode to a CodeMirror
+compartment. Reconfiguration changes only the theme extension; it preserves the
+editor instance, document, selection and undo history. Syntax styling uses six
+semantic tag groups from the already locked Lezer highlighting package, declared
+as a direct dependency because application code now imports it.
+
+Editor appearance is owned in `src/editor-theme.js` through documented theme
+selectors. No generated CodeMirror class names or upstream hex-colour mapping are
+used. The Python literal/comment bracket policy is unchanged and remains #43.
+
+| Cue | Native comparison and resulting choice |
+| --- | --- |
+| Cursor and active-line gutter | Native light/dark cues are sufficient once CodeMirror receives the correct mode. Removed our colour overrides. |
+| Selection and current line | Native dark selection/current-line fills are visually close in this app palette. Retain the owner-approved #38 selection fill and low-alpha current line, verified by rendered-pixel regression. |
+| Gutter surface, type and layout | Keep app palette, readable font, padding and bounded scrolling. These integrate the editor with the existing panels. |
+| Keyboard focus | Keep the padded outer editor focus border; suppress only the duplicate inner outline. |
+| Brackets | Native translucent fills remain. Retain thin boundary outlines and the mismatch underline to distinguish cues without relying on colour alone. |
+
+These retained choices use the supported theme API rather than `!important`
+stylesheet overrides. The focused selection selector matches the specificity of
+CodeMirror's documented selection-layer structure; regression checks cover actual
+rendered selection in both modes and after blur. Visual comparisons are reviewed
+locally before merge; this record does not introduce new product behaviour.

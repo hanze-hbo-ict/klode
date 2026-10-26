@@ -149,3 +149,11 @@ literal/comment bracket policy, remains binding until a product-owner decision
 changes it. This amendment does not implement those follow-ups. See
 [design decisions](../docs/design-decisions.md) for concrete rationale and open
 choices. The existing independent review and human merge/publication gates remain.
+
+## Theme integration preservation — 2026-10-26 (#42)
+
+Theme changes preserve the existing editor instance, source, selection and undo
+history as well as execution/transcript. Internal editor light/dark mode follows
+the resolved application mode, including System changes. The cleanup keeps the
+approved selection, focus and bracket/keyboard behaviour; its replaceable design
+choices are recorded in [design decisions](../docs/design-decisions.md#codemirror-theme-boundary-42).

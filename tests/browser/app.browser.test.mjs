@@ -4,6 +4,7 @@ import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { chromium } from 'playwright-core';
 import { waitForPreview } from '../support/preview-ready.mjs';
+import { waitForEditorTheme } from '../support/editor-appearance.mjs';
 const port = 4275, origin = `http://127.0.0.1:${port}`;
 const preview = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'preview', '--host', '127.0.0.1', '--port', String(port)], { stdio: 'pipe' });
 let browser, negative;
@@ -31,7 +32,10 @@ try {
   }
   async function theme(mode) {
     for (let step = 0; step < 3; step++) {
-      if (await page.locator('#theme').getAttribute('data-theme-choice') === mode) return;
+      if (await page.locator('#theme').getAttribute('data-theme-choice') === mode) {
+        await waitForEditorTheme(page);
+        return;
+      }
       await page.locator('#theme').click();
     }
     assert.equal(await page.locator('#theme').getAttribute('data-theme-choice'), mode);
@@ -162,8 +166,8 @@ try {
     for (const id of ['run', 'console-title']) await page.locator(`#${id}`).scrollIntoViewIfNeeded();
   }
   await theme('system'); await page.emulateMedia({ colorScheme: 'dark' });
-  await page.waitForFunction(() => document.documentElement.dataset.theme === 'dark');
-  await page.emulateMedia({ colorScheme: 'light' }); await page.waitForFunction(() => document.documentElement.dataset.theme === 'light');
+  await page.waitForFunction(() => document.documentElement.dataset.theme === 'dark'); await waitForEditorTheme(page);
+  await page.emulateMedia({ colorScheme: 'light' }); await page.waitForFunction(() => document.documentElement.dataset.theme === 'light'); await waitForEditorTheme(page);
   assert.equal(await source(), retained); passed.push('360/1280 layout and live system/manual themes preserve source');
   for (const [width, height] of [[1280, 720], [360, 640]]) {
     await page.setViewportSize({ width, height }); await page.evaluate(() => window.scrollTo(0, 0));

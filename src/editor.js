@@ -1,12 +1,12 @@
-import { EditorState, Prec } from '@codemirror/state';
+import { EditorState, Prec, Compartment } from '@codemirror/state';
 import { EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLineGutter, drawSelection } from '@codemirror/view';
 import { pythonLanguage } from '@codemirror/lang-python';
-import { syntaxHighlighting, defaultHighlightStyle, HighlightStyle, indentOnInput, indentUnit, bracketMatching, syntaxTree } from '@codemirror/language';
+import { syntaxHighlighting, indentOnInput, indentUnit, bracketMatching, syntaxTree } from '@codemirror/language';
 import { closeBrackets, closeBracketsKeymap } from '@codemirror/autocomplete';
 import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirror/commands';
 
-const palette = { '#404740': 'var(--muted)', '#708': 'var(--syntax-keyword)', '#219': 'var(--syntax-number)', '#164': 'var(--syntax-name)', '#a11': 'var(--syntax-string)', '#e40': 'var(--syntax-number)', '#00f': 'var(--syntax-name)', '#30a': 'var(--syntax-name)', '#085': 'var(--syntax-name)', '#167': 'var(--syntax-name)', '#256': 'var(--syntax-name)', '#00c': 'var(--syntax-name)', '#940': 'var(--muted)', '#f00': 'var(--error)' };
-const highlighting = HighlightStyle.define(defaultHighlightStyle.specs.map((spec) => ({ ...spec, ...(spec.color ? { color: palette[spec.color] } : {}) })));
+import { highlighting, editorTheme, themeMode } from './editor-theme.js';
+
 // Keep Python's quote/prefix handling, but avoid pairing brackets in literal
 // text or any delimiters in comments. Reuse the language's existing syntax tree.
 const bracketData = Prec.highest(EditorState.languageData.of((state, pos) => {
@@ -32,9 +32,11 @@ const bracketData = Prec.highest(EditorState.languageData.of((state, pos) => {
 export function createEditor(parent, source, onChange) {
   // Use only the language parser, not python()'s completion-support extension.
   // Tab indents; CodeMirror provides Escape-then-Tab focus navigation.
+  const appearance = new Compartment();
   const view = new EditorView({
     parent,
     state: EditorState.create({ doc: source, extensions: [
+      editorTheme, appearance.of(themeMode('light')),
       pythonLanguage, syntaxHighlighting(highlighting), indentOnInput(), indentUnit.of('    '),
       bracketData, closeBrackets(), bracketMatching(),
       lineNumbers(), highlightActiveLineGutter(), highlightActiveLine(), drawSelection(), history(),
@@ -43,5 +45,9 @@ export function createEditor(parent, source, onChange) {
       EditorView.updateListener.of((update) => { if (update.docChanged) onChange(update.state.doc.toString()); }),
     ] }),
   });
-  return { source: () => view.state.doc.toString(), focus: () => view.focus() };
+  return {
+    source: () => view.state.doc.toString(),
+    focus: () => view.focus(),
+    setTheme: (mode) => view.dispatch({ effects: appearance.reconfigure(themeMode(mode)) }),
+  };
 }
