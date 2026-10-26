@@ -134,3 +134,18 @@ in both themes, including retained selections after focus leaves the editor.
 Current-line and bracket decorations must not cover the selection layer. Preserve
 syntax legibility, exact copying and keyboard behaviour; bracket outlines remain
 distinct from the selection fill.
+
+## Maintainability guidance — 2026-10-26 (#41)
+
+Apply constitution 1.1.0 principles III–IV when designing changes. Keep product
+acceptance observable and distinguish it from replaceable implementation choices.
+Use supported library defaults/APIs as the starting point; justify custom behaviour
+through a concrete user need and its maintenance cost in the existing issue,
+design or PR. Do not count fewer packages or more tests as improvements by themselves.
+
+The simplicity review retains Vite and the existing worker/input/output mechanisms;
+implementation follow-ups are #42–#45. Existing accepted behaviour, including the
+literal/comment bracket policy, remains binding until a product-owner decision
+changes it. This amendment does not implement those follow-ups. See
+[design decisions](../docs/design-decisions.md) for concrete rationale and open
+choices. The existing independent review and human merge/publication gates remain.
