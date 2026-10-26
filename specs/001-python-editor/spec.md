@@ -2,7 +2,7 @@
 
 **Feature Branch**: `001-python-editor`
 **Created**: 2026-10-21
-**Updated**: 2026-10-23
+**Updated**: 2026-10-26
 **Status**: Approved scope revised by feedback round 1 (#19–#24); public deployment
 includes the revised implementation merged in PR #25. Actual school acceptance
 remains pending. Cleanup #28 retires the separate spike application without
@@ -150,8 +150,9 @@ Agreed error handling:
   inside, skip an existing auto-inserted closer when typed and delete an empty pair with Backspace. Avoid
   unwanted pairing in comments/string text. Retain Python-aware prefix/triple-quote
   handling; skip an auto-inserted closing quote and delete empty quote pairs.
-  Highlight matching and mismatching brackets legibly in light/dark themes. Preserve undo/redo, exact copying and browser Tab
-  navigation. Mechanical bracket assistance is allowed; code suggestions, snippets,
+  Highlight matching and mismatching brackets legibly in light/dark themes. Preserve undo/redo and exact copying. Tab indents current/selected lines by four
+  spaces; Shift+Tab dedents. Escape then Tab temporarily permits focus navigation
+  out of the editor (#36), superseding ordinary-Tab navigation. Mechanical bracket assistance is allowed; code suggestions, snippets,
   AI assistance remain excluded (#29).
 
 - **FR-013**: Put one state-dependent Run code/Stop/Retry button in a stable
@@ -298,5 +299,16 @@ closer, deleting an empty pair, nested pairs and undo/redo with exact native cop
 Check single/double quotes close, skip and delete as pairs, including Python
 prefixes/triple quotes. Representative comments/string text and apostrophes inside
 strings must not gain unwanted closing characters. Matching and mismatch indications remain visible
-in both themes without obscuring text/selection. Tab still navigates focus and
+in both themes without obscuring text/selection. Escape then Tab permits focus navigation under #36, and
 Control+Space does not open completion suggestions.
+
+## Tab indentation acceptance — 2026-10-26 (#36)
+
+Manually indent the unindented `print("hallo")` after `if True:` with Tab and run
+it successfully. Test Shift+Tab, multiline selection, exact copy and undo/redo.
+Ordinary Tab retains editor focus. Escape then Tab must leave the editor, with
+keyboard access to Run/theme/console preserved; record the temporary escape
+window and how indentation resumes. Keep Enter indentation and bracket/quote
+assistance. After local preview the product owner chose to omit the visible keyboard hint;
+keep the native Escape–Tab route without hint text. Preserve console/output and
+input focus behaviour; no standalone REPL or routine console cycling is added.

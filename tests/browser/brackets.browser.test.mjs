@@ -90,11 +90,49 @@ try {
     assert.equal(mismatch.outline, 'solid'); assert.equal(mismatch.decoration, 'wavy'); assert.notEqual(mismatch.background, mismatch.text);
   }
   passed.push('matching and mismatching indications in both themes, with visible outline and mismatch underline');
+  await page.waitForFunction(() => document.querySelector('#status').dataset.state === 'ready');
+  const broken = 'if True:\nprint("hallo")';
+  const fixed = 'if True:\n    print("hallo")';
+  await setSource(broken); await keyboard.press('Home'); await page.waitForTimeout(600);
+  await keyboard.press('Tab');
+  assert.equal(await editor.evaluate((node) => node === document.activeElement), true);
+  assert.equal(await source(), fixed);
+  await keyboard.press('ControlOrMeta+z'); assert.equal(await source(), broken);
+  await keyboard.press('ControlOrMeta+y'); assert.equal(await source(), fixed);
+  await page.locator('#run').click();
+  await page.waitForFunction(() => document.querySelector('#output').textContent === 'hallo\n');
+  await editor.focus(); await keyboard.press('Home'); await keyboard.press('Shift+Tab');
+  assert.equal(await editor.evaluate((node) => node === document.activeElement), true);
+  assert.equal(await source(), broken);
+  await setSource('print(1)\nprint(2)'); await keyboard.press('ControlOrMeta+a');
+  await keyboard.press('Tab');
+  assert.equal(await editor.innerText(), '    print(1)\n    print(2)');
+  await keyboard.press('Shift+Tab'); assert.equal(await source(), 'print(1)\nprint(2)');
+  await keyboard.press('Escape'); await keyboard.press('Tab');
+  assert.equal(await page.locator('#output').evaluate((node) => node === document.activeElement), true);
+  // Refocus, then another editing key cancels the temporary escape mode.
+  await editor.focus(); await keyboard.press('ArrowLeft'); await keyboard.press('Tab');
+  assert.equal(await editor.evaluate((node) => node === document.activeElement), true);
+  await keyboard.press('Escape'); await keyboard.press('Shift+Tab');
+  assert.equal(await page.locator('#run').evaluate((node) => node === document.activeElement), true);
+  await keyboard.press('Shift+Tab');
+  assert.equal(await page.locator('#theme').evaluate((node) => node === document.activeElement), true);
+  await editor.focus(); await keyboard.press('Escape'); await page.waitForTimeout(2100);
+  await keyboard.press('Tab');
+  assert.equal(await editor.evaluate((node) => node === document.activeElement), true);
+  assert.equal(await page.locator('#editor-keys').count(), 0);
+  for (const width of [360, 1280]) for (const mode of ['light', 'dark']) {
+    await page.setViewportSize({ width, height: 640 });
+    await page.evaluate((mode) => { document.documentElement.dataset.theme = mode; }, mode);
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
+    await page.screenshot({ path: `/tmp/klode-tab-${width}-${mode}.png`, fullPage: true });
+  }
+  passed.push('Tab/Shift+Tab correct and run the reported example, selection indentation, undo/redo/copy; temporary Escape navigation to console/Run/theme without a visible keyboard hint');
   await setSource('pri'); await keyboard.type('n'); await keyboard.press('Control+Space');
   assert.equal(await page.locator('.cm-tooltip-autocomplete').count(), 0);
-  await keyboard.press('Tab'); assert.equal(await editor.evaluate((node) => node === document.activeElement), false);
+  await keyboard.press('Escape'); await keyboard.press('Tab'); assert.equal(await editor.evaluate((node) => node === document.activeElement), false);
   assert.equal(await page.getByText('No code completion or AI assistance', { exact: true }).count(), 1);
-  passed.push('no completion popup; Tab navigates focus; footer retained');
+  passed.push('no completion popup; Escape then Tab navigates focus; footer retained');
   console.log(JSON.stringify({ result: 'pass', browser: browser.version(), cases: passed }, null, 2));
 } finally {
   await browser?.close(); preview.kill();
