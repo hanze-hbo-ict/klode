@@ -41,6 +41,16 @@ Dutch. Existing Dutch artifacts are being addressed separately in
 [issue #8](https://github.com/hanze-hbo-ict/klode/issues/8); preserve their meaning
 and open questions when translating. UI language is a separate product decision.
 
+## Design and maintenance
+
+Apply constitution principles III–IV; see [design decisions](docs/design-decisions.md)
+for examples and current follow-ups. For nontrivial tool choices or custom deviations,
+link a concise rationale in the existing issue/design/PR: user benefit, why defaults
+are insufficient, maintenance coupling and relevant checks. Do not create another
+approval document. Preserve agreed behaviour, keep source readable and choose
+checks for requirements and demonstrated defects. The existing review and human
+gates apply.
+
 ## Development and checks
 
 Use the Node/npm versions in [.node-version](.node-version) and

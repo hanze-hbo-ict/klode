@@ -315,3 +315,11 @@ window and how indentation resumes. Keep Enter indentation and bracket/quote
 assistance. After local preview the product owner chose to omit the visible keyboard hint;
 keep the native Escape–Tab route without hint text. Preserve console/output and
 input focus behaviour; no standalone REPL or routine console cycling is added.
+
+## Maintainability application — 2026-10-26 (#41)
+
+Apply constitution 1.1.0 and the [product guidance](../product.md#maintainability-guidance--2026-10-26-41)
+to future implementation reviews. Existing acceptance criteria remain binding;
+#42–#45 are separate follow-ups and do not silently relax editor behaviour or
+actual-school acceptance. See [design decisions](../../docs/design-decisions.md)
+for current rationale and unresolved implementation choices.

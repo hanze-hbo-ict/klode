@@ -16,6 +16,12 @@ Describe allowed changes and what is outside this task.
 
 Describe observable behaviour and the verification required.
 
+## Design rationale (when relevant)
+
+For a nontrivial tool choice or custom deviation, link existing rationale or briefly
+state the user benefit, why defaults are insufficient, maintenance coupling and
+relevant verification. Preserve existing product agreements.
+
 ## Dependencies and open decisions
 
 ## Execution and handoff
