@@ -12,7 +12,7 @@ try {
   const page = await browser.newPage({ permissions: ['clipboard-read', 'clipboard-write'], viewport: { width: 1280, height: 720 } });
   await page.goto('http://127.0.0.1:4275/');
   const editor = page.locator('.cm-content');
-  const code = 'value = "hello"        # note\nnumber = 42               \nprint(value)              \n# outside                 ';
+  const code = 'value = "hello" if True else ""   # note\nnumber = 42               \nprint(value)              \n# outside                 ';
   async function select(kind) {
     await editor.focus(); await page.keyboard.press('ControlOrMeta+a'); await page.keyboard.insertText(code);
     await page.keyboard.press('ControlOrMeta+Home');
