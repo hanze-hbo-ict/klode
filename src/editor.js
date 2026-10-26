@@ -39,7 +39,7 @@ export function createEditor(parent, source, onChange) {
       bracketData, closeBrackets(), bracketMatching(),
       lineNumbers(), highlightActiveLineGutter(), highlightActiveLine(), drawSelection(), history(),
       keymap.of([indentWithTab, ...closeBracketsKeymap, ...defaultKeymap, ...historyKeymap]),
-      EditorView.contentAttributes.of({ 'aria-label': 'main.py Python source', 'aria-describedby': 'editor-keys', spellcheck: 'false', autocorrect: 'off', autocapitalize: 'off' }),
+      EditorView.contentAttributes.of({ 'aria-label': 'main.py Python source', spellcheck: 'false', autocorrect: 'off', autocapitalize: 'off' }),
       EditorView.updateListener.of((update) => { if (update.docChanged) onChange(update.state.doc.toString()); }),
     ] }),
   });

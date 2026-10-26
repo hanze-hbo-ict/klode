@@ -309,6 +309,6 @@ it successfully. Test Shift+Tab, multiline selection, exact copy and undo/redo.
 Ordinary Tab retains editor focus. Escape then Tab must leave the editor, with
 keyboard access to Run/theme/console preserved; record the temporary escape
 window and how indentation resumes. Keep Enter indentation and bracket/quote
-assistance. Provide a concise accessible provisional keyboard hint in both themes
-and narrow layouts. Final hint wording, placement and retention remain pending
-explicit product-owner review of the concrete preview.
+assistance. After local preview the product owner chose to omit the visible keyboard hint;
+keep the native Escape–Tab route without hint text. Preserve console/output and
+input focus behaviour; no standalone REPL or routine console cycling is added.

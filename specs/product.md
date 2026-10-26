@@ -122,5 +122,7 @@ Tab indents the current or selected lines by four spaces; Shift+Tab dedents.
 This supersedes the earlier ordinary-Tab focus-navigation agreement. Escape then
 Tab provides a temporary keyboard escape route from the editor using supported
 CodeMirror behaviour. Preserve Enter indentation, undo/copy and bracket/quote help.
-A concise accessible hint may be shown provisionally; its wording, placement and
-continued inclusion require the product owner’s final judgment on the preview.
+After local preview, the product owner rejected the provisional visible hint:
+Tab/Shift+Tab are familiar editing commands. Retain the native Escape–Tab escape
+route without a visible hint for keyboard-only access to other controls. The
+console remains script output/input, not a standalone REPL.

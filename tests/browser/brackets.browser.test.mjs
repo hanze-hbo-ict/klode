@@ -120,18 +120,14 @@ try {
   await editor.focus(); await keyboard.press('Escape'); await page.waitForTimeout(2100);
   await keyboard.press('Tab');
   assert.equal(await editor.evaluate((node) => node === document.activeElement), true);
-  assert.equal(await editor.getAttribute('aria-describedby'), 'editor-keys');
+  assert.equal(await page.locator('#editor-keys').count(), 0);
   for (const width of [360, 1280]) for (const mode of ['light', 'dark']) {
     await page.setViewportSize({ width, height: 640 });
     await page.evaluate((mode) => { document.documentElement.dataset.theme = mode; }, mode);
-    assert.equal(await page.locator('#editor-keys').isVisible(), true);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
-    const hint = await page.locator('#editor-keys').boundingBox();
-    const panel = await page.locator('.editor-panel').boundingBox();
-    assert.ok(hint.x >= panel.x && hint.x + hint.width <= panel.x + panel.width);
     await page.screenshot({ path: `/tmp/klode-tab-${width}-${mode}.png`, fullPage: true });
   }
-  passed.push('Tab/Shift+Tab correct and run the reported example, selection indentation, undo/redo/copy; temporary Escape navigation to console/Run/theme and accessible provisional hint');
+  passed.push('Tab/Shift+Tab correct and run the reported example, selection indentation, undo/redo/copy; temporary Escape navigation to console/Run/theme without a visible keyboard hint');
   await setSource('pri'); await keyboard.type('n'); await keyboard.press('Control+Space');
   assert.equal(await page.locator('.cm-tooltip-autocomplete').count(), 0);
   await keyboard.press('Escape'); await keyboard.press('Tab'); assert.equal(await editor.evaluate((node) => node === document.activeElement), false);
