@@ -165,7 +165,10 @@ Agreed error handling:
   click or add an automatic execution timeout. No idle Stop/reset control. Preserve
   current source and responsive reachability at short/narrow sizes.
 - **FR-014**: Give editor and console clear, rounded, padded keyboard focus in both
-  themes, without clipping at the gutter or obscuring text/selection.
+  themes, without clipping at the gutter or obscuring text/selection. Actual selected text
+  must remain visibly distinct from the current-line locator in both themes,
+  including partial/multiline/full selections and retained selection after blur.
+  Current-line/bracket backgrounds must not cover selection fill (#38).
 - **FR-015**: Use one keyboard-operable theme button cycling System → Light →
   Dark → System. Show only the current mode's local icon. Its accessible name/title
   convey current mode and next action; retain visible focus. System follows live OS

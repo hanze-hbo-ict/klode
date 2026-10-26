@@ -126,3 +126,11 @@ After local preview, the product owner rejected the provisional visible hint:
 Tab/Shift+Tab are familiar editing commands. Retain the native Escape–Tab escape
 route without a visible hint for keyboard-only access to other controls. The
 console remains script output/input, not a standalone REPL.
+
+## Editor selection visibility — 2026-10-26 (#38)
+
+Keep actual selected source visibly distinct from the subtle current-line locator
+in both themes, including retained selections after focus leaves the editor.
+Current-line and bracket decorations must not cover the selection layer. Preserve
+syntax legibility, exact copying and keyboard behaviour; bracket outlines remain
+distinct from the selection fill.
