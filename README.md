@@ -54,7 +54,7 @@ Bug reports and suggestions are welcome in
 [GitHub issues](https://github.com/hanze-hbo-ict/klode/issues). See
 [CONTRIBUTING](CONTRIBUTING.md) for the human and agent workflow, checks and review.
 The [product overview](specs/product.md) describes the agreed scope;
-[development tooling](docs/ontwikkelen.md) explains the local Spec Kit setup.
+[development tooling](docs/development.md) explains the local Spec Kit setup.
 
 Klode is available under the [MIT license](LICENSE). See
 [third-party notices](THIRD_PARTY_NOTICES.md),

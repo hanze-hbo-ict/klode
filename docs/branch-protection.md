@@ -39,7 +39,7 @@ PR once these checks pass, regardless of its author. Repository permissions were
 not changed. Optional GitHub reviews and independent agent reviews remain useful,
 but a second human approval is not a prerequisite for merge.
 
-The human merge decision remains required by `docs/werkwijze.md`. An agent may
+The human merge decision remains required by `docs/workflow.md`. An agent may
 execute a merge when explicitly instructed by an authorised human; it must not
 merge autonomously. GitHub cannot distinguish a human from an agent using the
 same account, so this part of the gate remains a process agreement.

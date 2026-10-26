@@ -16,9 +16,9 @@ merge any PR, including their own, once required checks pass. No separate
 second-person GitHub approval is required. Independent agent review remains part
 of the workflow. Agents execute merges only on explicit human instruction.
 
-Read `docs/werkwijze.md` and the applicable specification before doing work.
+Read `docs/workflow.md` and the applicable specification before doing work.
 The project principles are in `.specify/memory/constitution.md`; the local
-Spec Kit integration and its usage are documented in `docs/ontwikkelen.md`.
+Spec Kit integration and its usage are documented in `docs/development.md`.
 The human product owner determines scope and desired behaviour and decides merge.
 Merge approval authorises publication of the approved version.
 
