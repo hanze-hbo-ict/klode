@@ -29,7 +29,7 @@ including private student work or credentials.
    the deployment; failing release checks stop publication and are reported.
 
 These are entry points to the existing agreements, not a separate process.
-Read [AGENTS.md](AGENTS.md), the [workflow and roles](docs/werkwijze.md), the
+Read [AGENTS.md](AGENTS.md), the [workflow and roles](docs/workflow.md), the
 [constitution](.specify/memory/constitution.md) and the applicable
 [product/feature specifications](specs/product.md) before working. Agent handoffs
 name the role, issue, specification version, scope, evidence and next responsible
@@ -79,7 +79,7 @@ uv run --locked specify version
 uv run --locked specify check
 ```
 
-See [development tooling](docs/ontwikkelen.md) for setup and Spec Kit usage, and
+See [development tooling](docs/development.md) for setup and Spec Kit usage, and
 [hosting and release verification](docs/hosting.md) for deployment checks.
 Spec Kit does not replace the project's role boundaries or human merge gate.
 Distinguish local/browser checks from actual restricted school-laptop acceptance;

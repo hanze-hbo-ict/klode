@@ -54,7 +54,7 @@ keyboard behaviour or runtime constraints.
 The product owner is a human. The orchestrator clarifies wishes, creates GitHub
 work items and coordinates isolated tasks. Developer, tester/reviewer and release
 manager have bounded responsibilities. A reviewer does not assess their own
-implementation. Follow `docs/werkwijze.md` for the workflow, handoffs, blockers
+implementation. Follow `docs/workflow.md` for the workflow, handoffs, blockers
 and escalation.
 
 ## Work items and verification

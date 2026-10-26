@@ -56,7 +56,7 @@ CLI commands are terminal commands; the skills above are not.
 
 ## Alignment with our workflow
 
-Read `AGENTS.md`, `docs/werkwijze.md` and the project principles before use.
+Read `AGENTS.md`, `docs/workflow.md` and the project principles before use.
 `specs/product.md` remains the product overview. Spec Kit normally places features
 under `specs/<number>-<name>/`. The current editor specification is
 `specs/001-python-editor/spec.md`; unresolved product questions remain explicit.
@@ -76,7 +76,7 @@ project's own principles and process agreements.
 CLI 1.2.2, Codex skills, templates and Bash scripts are available locally.
 Bootstrap was merged through PR #5. The `Tooling` workflow checks the development
 environment and bundled Spec Kit files. See
-[branch protection and checks](branchbescherming.md) for the configuration and
+[branch protection and checks](branch-protection.md) for the configuration and
 limitations of the merge gate.
 
 The public editor is live at https://klode.app/. See
