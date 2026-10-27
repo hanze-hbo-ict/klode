@@ -1,15 +1,19 @@
 // One-off decision evidence for #43, not a production module or test baseline.
 // Run: node tests/research/bracket-policy.mjs
 import { readFile } from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
 import { EditorState } from '@codemirror/state';
 import { pythonLanguage } from '@codemirror/lang-python';
 import { ensureSyntaxTree } from '@codemirror/language';
 import { closeBrackets, insertBracket, deleteBracketPair } from '@codemirror/autocomplete';
 
-// Read the real policy without changing production exports or copying its logic.
+// Read the recorded pre-decision policy without copying its implementation.
 // Resolve its imports before evaluating a research-only module with one extra export.
 const editorURL = new URL('../../src/editor.js', import.meta.url);
-const source = (await readFile(editorURL, 'utf8')).replace(
+const baseline = '4f96bda51113b43e7bb257f55911cec0d85b10d9';
+const source = execFileSync('git', ['show', `${baseline}:src/editor.js`], {
+  cwd: new URL('../../', import.meta.url), encoding: 'utf8',
+}).replace(
   /from\s+(['"])([^'"]+)\1/g,
   (_, quote, specifier) => `from ${JSON.stringify(specifier.startsWith('.')
     ? new URL(specifier, editorURL).href : import.meta.resolve(specifier))}`,

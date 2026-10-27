@@ -37,9 +37,9 @@ await withBrowser(async ({ browser, origin }) => {
   await keyboard.press('ControlOrMeta+y'); assert.equal(await source(), '()');
   passed.push('undo and redo treat bracket insertion as one edit');
   for (const prefix of ['# comment ', 'text = "inside ', "text = 'inside ", 'text = """inside ', 'text = f"inside ']) {
-    for (const open of ['(', '[', '{']) {
+    for (const [open, close] of [['(', ')'], ['[', ']'], ['{', '}']]) {
       await setSource(prefix); await keyboard.type(open);
-      assert.equal(await source(), prefix + open);
+      assert.equal(await source(), prefix + open + close);
     }
   }
   for (const quote of ["'", '"']) {
@@ -50,7 +50,7 @@ await withBrowser(async ({ browser, origin }) => {
     await setSource(''); // CodeMirror skips the entire generated triple closer on one quote key.
     await keyboard.type(quote.repeat(3) + 'text' + quote);
     assert.equal(await source(), quote.repeat(3) + 'text' + quote.repeat(3));
-    await setSource('# comment '); await keyboard.type(quote); assert.equal(await source(), '# comment ' + quote);
+    await setSource('# comment '); await keyboard.type(quote); assert.equal(await source(), '# comment ' + quote.repeat(2));
   }
   for (const prefix of ['f', 'r', 'b', 'fr']) {
     await setSource(prefix); await keyboard.type('"text"'); assert.equal(await source(), prefix + '"text"');
@@ -65,7 +65,11 @@ await withBrowser(async ({ browser, origin }) => {
   await keyboard.type('('); assert.equal(await source(), 'text = f"{value()}"');
   await setSource('value = "done"'); await keyboard.type('(');
   assert.equal(await source(), 'value = "done"()');
-  passed.push('comments/string text remain literal; quotes/prefixes/triple quotes close, skip and delete; code after string still pairs');
+  await setSource('text = f"value  rest"'); await keyboard.press('Home');
+  for (let i = 0; i < 'text = f"value '.length; i++) await keyboard.press('ArrowRight');
+  await keyboard.type('{');
+  assert.equal(await source(), 'text = f"value {} rest"');
+  passed.push('native contextual pairing in comments/unfinished strings/f-string replacement starts; quote/prefix/triple help and code after strings');
   for (const mode of ['light', 'dark']) {
     for (let i = 0; i < 3 && await page.locator('#theme').getAttribute('data-theme-choice') !== mode; i++) await page.locator('#theme').click();
     await setSource('(x)'); await keyboard.press('ArrowLeft');

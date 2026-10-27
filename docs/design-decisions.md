@@ -12,7 +12,7 @@ explains how the current design meets them and what maintaining it costs.
 | --- | --- | --- |
 | Vite | Resolves package/CSS imports, bundles the worker and emits static assets. A custom server replaces only serving; a fair comparison includes the remaining build responsibilities. | Retain; no build-tool replacement in #40. |
 | Syntax highlighting | Map semantic categories such as keywords and strings to a deliberate theme. Mapping another theme's exact hex values ties semantics to upstream presentation. | Semantic tags and a theme compartment implemented in #42; palette remains local. |
-| Python bracket policy | Current custom filtering satisfies agreed literal/comment behaviour, but depends on parser node names and error recovery. Native defaults differ. | #43 compares options; an owner decision precedes any changed behaviour. |
+| Python bracket policy | The former filter depended on parser node names and error recovery. Native pairing meets the revised owner-approved scope without that coupling. | Owner accepted native contextual pairing in #43; remove custom filter and preserve #36 keymap. |
 | Worker/input/output protocol | Shared input supports synchronous Python input without blocking the UI. Worker termination, identities and output backpressure support responsive Stop, stale-event rejection and lossless finite output. | Preserve these requirements; implementation details may change only with evidence that the same behaviour holds. |
 | Runtime metadata and generated assets | Repeated version literals can drift; old generated versions can leak into local build output. Authoritative inputs and clean generation reduce that responsibility. | #44 addresses packaging/configuration without upgrading the runtime. |
 
@@ -52,7 +52,8 @@ as a direct dependency because application code now imports it.
 
 Editor appearance is owned in `src/editor-theme.js` through documented theme
 selectors. No generated CodeMirror class names or upstream hex-colour mapping are
-used. The Python literal/comment bracket policy is unchanged and remains #43.
+used. #42 preserved the old literal/comment policy; the later #43 decision accepts
+native pairing while retaining the keyboard agreement.
 
 | Cue | Native comparison and resulting choice |
 | --- | --- |
@@ -91,3 +92,14 @@ review/update file pins and runtime licence notices, then build and run runtime
 and browser regressions. There is no separate path/version literal to update.
 A clean build and a build with prior generated releases must contain the same
 runtime assets. This cleanup does not upgrade Pyodide or change worker/input/Stop.
+
+## Native Python bracket pairing (#43)
+
+The owner accepted native bracket/quote behaviour after the
+[46-scenario comparison](../specs/001-python-editor/evidence/bracket-policy.md),
+conditional on preserving Tab/Shift+Tab indentation. Remove the language-data
+filter rather than maintaining parser-node/error-placement and prefix-regex coupling.
+Native contextual closers in comments and string text are an accepted tradeoff.
+Keep the explicit keymap (indentWithTab first), four-space indent unit, native
+Escape–Tab route and no completion preset; this is a bracket-policy change only.
+Existing quote/selection/copy/undo/theme/runtime regression coverage remains.

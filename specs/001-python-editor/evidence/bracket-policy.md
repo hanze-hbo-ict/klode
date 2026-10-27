@@ -2,13 +2,17 @@
 
 Date: 2026-10-27. Baseline: `4f96bda51113b43e7bb257f55911cec0d85b10d9`.
 Constitution 1.1.0 and current product/feature specifications apply.
-Status: decision evidence; **no product behaviour or specification change approved**.
+Status: historical pre-decision comparison. On 2026-10-27 the product owner
+accepted option A, explicitly preserving #36 Tab/Shift+Tab indentation. Current
+behaviour is governed by the amended product/feature specs; the rows below retain
+the original baseline comparison, not a claim that the custom filter remains.
 
 ## Reproduce and scope
 
 Run `npm ci`, then `node tests/research/bracket-policy.mjs` from the repository
-root. The script uses the locked packages and reads the actual current policy
-from src/editor.js without modifying it or maintaining a copied implementation.
+root with the baseline commit available in local Git history. The script uses the
+locked packages and reads the pre-decision src/editor.js from the recorded commit
+without modifying files or maintaining a copied implementation.
 It evaluates a research-only module with an additional private-policy export.
 It compares CodeMirror's public insertBracket/deleteBracketPair operations with
 ordinary insertion fallback; the normal input handler uses insertBracket for
@@ -64,8 +68,8 @@ an implementation simplification equivalent to A. Fixing different f-string
 behaviour would require a separate product decision.
 
 Neither option enables code suggestions/AI or changes ordinary selection, copy,
-undo, indentation, runtime input/Stop or release gates. **Wait for the owner's
-choice before changing production policy, acceptance expectations or specs.**
+undo, indentation, runtime input/Stop or release gates. The owner subsequently
+chose A; preserve the explicit Tab/Shift+Tab condition during implementation.
 
 ## Scenario results
 
