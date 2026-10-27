@@ -29,7 +29,7 @@ const bracketData = Prec.highest(EditorState.languageData.of((state, pos) => {
   }
   return config ? [{ closeBrackets: config }] : [];
 }));
-export function createEditor(parent, source, onChange) {
+export function createEditor(parent, source) {
   // Use only the language parser, not python()'s completion-support extension.
   // Tab indents; CodeMirror provides Escape-then-Tab focus navigation.
   const appearance = new Compartment();
@@ -42,7 +42,6 @@ export function createEditor(parent, source, onChange) {
       lineNumbers(), highlightActiveLineGutter(), highlightActiveLine(), drawSelection(), history(),
       keymap.of([indentWithTab, ...closeBracketsKeymap, ...defaultKeymap, ...historyKeymap]),
       EditorView.contentAttributes.of({ 'aria-label': 'main.py Python source', spellcheck: 'false', autocorrect: 'off', autocapitalize: 'off' }),
-      EditorView.updateListener.of((update) => { if (update.docChanged) onChange(update.state.doc.toString()); }),
     ] }),
   });
   return {
