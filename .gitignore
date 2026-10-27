@@ -8,4 +8,4 @@ __pycache__/
 !.env.example
 node_modules/
 dist/
-public/runtime/314.0.7/
+public/runtime/[0-9]*.[0-9]*.[0-9]*/

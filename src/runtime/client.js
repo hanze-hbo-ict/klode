@@ -45,7 +45,7 @@ export function createRuntime(onEvent) {
         activeRun = null; pending = null; emitState('failed');
         onEvent({ type: 'error', text: event.message || 'Python worker could not start. Try resetting the runtime.' });
       };
-      worker.postMessage({ type: 'initialise', mailbox: buffer, outputSignal: outputBuffer, runtimeURL: new URL('/runtime/314.0.7/', location.origin).href });
+      worker.postMessage({ type: 'initialise', mailbox: buffer, outputSignal: outputBuffer, runtimeURL: new URL(__KLODE_RUNTIME_PATH__, location.origin).href });
     } catch (error) { emitState('failed'); onEvent({ type: 'error', text: String(error) }); }
   }
   return {
