@@ -84,3 +84,13 @@ See [development tooling](docs/development.md) for setup and Spec Kit usage, and
 Spec Kit does not replace the project's role boundaries or human merge gate.
 Distinguish local/browser checks from actual restricted school-laptop acceptance;
 one does not prove the other.
+
+## Versioning and configuration
+
+Use the authorities and release policy in the
+[product specification](specs/product.md#version-and-configuration-authorities--2026-10-27-49).
+Link current instructions to configuration rather than repeating exact versions.
+Keep historical evidence unchanged. When deliberately releasing, update the
+application version in package.json and regenerate package-lock.json; after human
+approval, tag that approved commit with its matching vX.Y.Z. Ordinary merges do
+not require a release or a version bump. Constitution versions evolve separately.

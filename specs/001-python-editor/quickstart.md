@@ -5,7 +5,8 @@ recorded separately. Existing tooling checks also run via uv.
 
 ## Local setup
 
-Use Node 24.19.0/npm 11.16.0, then `npm ci`, `npm test`, `npm run dev` and
+Use Node from [.node-version](../../.node-version) and npm from
+[package.json](../../package.json) (`packageManager`), then `npm ci`, `npm test`, `npm run dev` and
 `npm run build`. The editor opens at `/`. The retired input spike is not built
 or served as a separate application. The runtime-vendoring script checks
 pinned assets. Run `npm run preview` with isolation headers configured for validation.

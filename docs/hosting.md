@@ -9,7 +9,11 @@ separately; the public URL alone does not establish every operational setting.
 
 Connect `hanze-hbo-ict/klode` and use production branch `main`. Leave the base
 directory empty (repository root). The committed configuration sets build command
-`npm run build`, publish directory `dist`, Node 24.19.0 and npm 11.16.0. No application
+`npm run build` and publish directory `dist`. Node comes from
+[.node-version](../.node-version); npm is declared in
+[package.json](../package.json) (`packageManager`). This setup retains
+an explicit `NPM_VERSION` copy in `netlify.toml`, checked by the tooling workflow. Remove
+any dashboard `NODE_VERSION` override so the committed file takes effect. No application
 secrets or runtime environment variables are required. Do not set `NODE_ENV` to
 `production` during dependency installation: build dependencies must be installed.
 The build verifies/packages the pinned Python runtime before running Vite.
