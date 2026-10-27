@@ -3,10 +3,6 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "engines": {
-    "node": "24.19.0",
-    "npm": "11.16.0"
-  },
   "packageManager": "npm@11.16.0",
   "scripts": {
     "vendor:runtime": "node scripts/vendor-runtime.mjs",

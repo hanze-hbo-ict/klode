@@ -3,7 +3,6 @@
   publish = "dist"
 
 [build.environment]
-  NODE_VERSION = "24.19.0"
   NPM_VERSION = "11.16.0"
 
 [[headers]]

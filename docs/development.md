@@ -1,6 +1,6 @@
 # Development environment
 
-Use Python 3.11 or newer and `uv`. `pyproject.toml` manages development tooling;
+Use Python satisfying the Python requirement in [pyproject.toml](../pyproject.toml) and `uv`. `pyproject.toml` manages development tooling;
 Klode currently has no Python application package. The editor runs as a
 JavaScript/Pyodide application in the browser.
 

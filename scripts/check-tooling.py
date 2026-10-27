@@ -21,6 +21,12 @@ def main():
         elif path.suffix == ".toml" or path.name == "uv.lock":
             tomllib.loads(path.read_text())
 
+    package = json.loads((ROOT / "package.json").read_text())
+    host = tomllib.loads((ROOT / "netlify.toml").read_text())
+    npm = package["packageManager"].removeprefix("npm@")
+    if host["build"]["environment"]["NPM_VERSION"] != npm:
+        raise ValueError("Netlify NPM_VERSION must match package.json packageManager")
+
     count = 0
     for manifest in sorted((ROOT / ".specify/integrations").glob("*.manifest.json")):
         for name, expected in json.loads(manifest.read_text())["files"].items():

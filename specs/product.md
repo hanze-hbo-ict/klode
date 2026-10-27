@@ -157,3 +157,19 @@ history as well as execution/transcript. Internal editor light/dark mode follows
 the resolved application mode, including System changes. The cleanup keeps the
 approved selection, focus and bracket/keyboard behaviour; its replaceable design
 choices are recorded in [design decisions](../docs/design-decisions.md#codemirror-theme-boundary-42).
+
+## Version and configuration authorities — 2026-10-27 (#49)
+
+The application version is declared in package.json, independently of constitution
+versions. Until a deliberate first release, its existing 0.0.0 is a placeholder.
+Human-approved releases use a matching vX.Y.Z Git tag on the approved commit;
+ordinary deployments between releases are identified by commit. A version-policy
+change does not itself authorise a release, tag, merge or publication.
+
+Give each maintained value one authoritative source: Node in .node-version, npm
+in package.json packageManager, and runtime dependencies in their declared package
+metadata. Derive consumers where supported. Document and check unavoidable host
+copies. Current instructions link to these sources instead of repeating exact
+versions. Preserve exact versions in dated evidence and generated lockfiles.
+The fixed version in pyproject.toml is required development-tool project metadata,
+not an application release version; do not synchronise it with package.json.

@@ -323,3 +323,9 @@ to future implementation reviews. Existing acceptance criteria remain binding;
 #42–#45 are separate follow-ups and do not silently relax editor behaviour or
 actual-school acceptance. See [design decisions](../../docs/design-decisions.md)
 for current rationale and unresolved implementation choices.
+
+## Version and configuration authorities — 2026-10-27 (#49)
+
+Apply the shared [version and configuration policy](../product.md#version-and-configuration-authorities--2026-10-27-49).
+This feature does not maintain an independent application or toolchain version.
+Dated evidence retains the versions and commit actually tested.

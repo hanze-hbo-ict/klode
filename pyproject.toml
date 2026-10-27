@@ -1,5 +1,7 @@
 [project]
 name = "klode"
+# Required uv project metadata; not the browser application version.
+# Keep fixed: application releases are versioned only in package.json.
 version = "0.1.0"
 description = "Minimal online programming environment for education and exams"
 readme = "README.md"

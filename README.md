@@ -29,7 +29,8 @@ copying into ans.app, remains a separate
 
 ## Run locally
 
-Use Node 24.19.0 and npm 11.16.0 (see [.node-version](.node-version)):
+Use the Node version in [.node-version](.node-version) and npm version in
+[package.json](package.json) (`packageManager`):
 
 ```bash
 npm ci
