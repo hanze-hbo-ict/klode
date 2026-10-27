@@ -1,17 +1,9 @@
 import assert from 'node:assert/strict';
-import { spawn } from 'node:child_process';
-import { chromium } from 'playwright-core';
-import { waitForPreview } from '../support/preview-ready.mjs';
+import { withBrowser } from '../support/browser-test.mjs';
 import { waitForEditorTheme } from '../support/editor-appearance.mjs';
 
-const origin = 'http://127.0.0.1:4275';
-const preview = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'preview', '--host', '127.0.0.1', '--port', '4275'], { stdio: 'pipe' });
-let browser;
 const passed = [];
-try {
-  await waitForPreview(preview, origin);
-  browser = await chromium.launch({ executablePath: process.env.CHROME_BIN || '/opt/google/chrome/chrome', headless: true,
-    args: process.getuid?.() === 0 ? ['--no-sandbox'] : [] });
+await withBrowser(async ({ browser, origin }) => {
   const context = await browser.newContext({ permissions: ['clipboard-read', 'clipboard-write'] });
   const page = await context.newPage();
   await page.goto(origin);
@@ -149,6 +141,4 @@ try {
   assert.equal(await page.getByText('No code completion or AI assistance', { exact: true }).count(), 1);
   passed.push('no completion popup; Escape then Tab navigates focus; footer retained');
   console.log(JSON.stringify({ result: 'pass', browser: browser.version(), cases: passed }, null, 2));
-} finally {
-  await browser?.close(); preview.kill();
-}
+});

@@ -11,7 +11,7 @@ Use Node from [.node-version](../../.node-version) and npm from
 or served as a separate application. The runtime-vendoring script checks
 pinned assets. Run `npm run preview` with isolation headers configured for validation.
 Run `npm run test:browser` with installed Chrome/Edge (`CHROME_BIN` override)
-for application regressions in `tests/browser/` (ports 4275–4276). Unit tests
+for application regressions in `tests/browser/` (loopback preview port 4275; an ephemeral port for the isolation-negative case). Unit tests
 and shared helpers are in `tests/unit/` and `tests/support/`. The production host must return the same headers; a successful dev server alone
 is insufficient evidence. No automatic deployment is part of these commands.
 
