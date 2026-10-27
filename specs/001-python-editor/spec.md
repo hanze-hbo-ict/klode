@@ -147,8 +147,9 @@ Agreed error handling:
   packages, user file workflows or graphics. Document runtime compatibility limits.
 - **FR-012**: Provide syntax highlighting and automatic indentation. Automatically
   close `()`, `[]`, `{}` and Python single/double quotes in code, place the caret
-  inside, skip an existing auto-inserted closer when typed and delete an empty pair with Backspace. Avoid
-  unwanted pairing in comments/string text. Retain Python-aware prefix/triple-quote
+  inside, skip an existing auto-inserted closer when typed and delete an empty pair with Backspace.
+  Accept native contextual pairing in comments/string text (#43); no custom literal filter.
+  Retain Python-aware prefix/triple-quote
   handling; skip an auto-inserted closing quote and delete empty quote pairs.
   Highlight matching and mismatching brackets legibly in light/dark themes. Preserve undo/redo and exact copying. Tab indents current/selected lines by four
   spaces; Shift+Tab dedents. Escape then Tab temporarily permits focus navigation
@@ -300,8 +301,9 @@ the main action without adding a Reset control or changing worker/cache semantic
 Verify real typing of each bracket pair, caret placement, skipping an automatic
 closer, deleting an empty pair, nested pairs and undo/redo with exact native copy.
 Check single/double quotes close, skip and delete as pairs, including Python
-prefixes/triple quotes. Representative comments/string text and apostrophes inside
-strings must not gain unwanted closing characters. Matching and mismatch indications remain visible
+prefixes/triple quotes. Accept native contextual closers in representative comments,
+string text and opposite-quote positions under the superseding #43 decision.
+Matching and mismatch indications remain visible
 in both themes without obscuring text/selection. Escape then Tab permits focus navigation under #36, and
 Control+Space does not open completion suggestions.
 
@@ -329,3 +331,13 @@ for current rationale and unresolved implementation choices.
 Apply the shared [version and configuration policy](../product.md#version-and-configuration-authorities--2026-10-27-49).
 This feature does not maintain an independent application or toolchain version.
 Dated evidence retains the versions and commit actually tested.
+
+## Native bracket defaults acceptance — 2026-10-27 (#43)
+
+Apply the [product-owner decision](../product.md#native-bracket-defaults-decision--2026-10-27-43).
+Remove custom comment/string filtering while retaining native bracket/quote
+extensions. Verify contextual pairing in comments, unfinished strings and f-string
+replacement starts, plus native quote/prefix/triple handling and closer skipping.
+The #36 Tab/Shift+Tab acceptance above remains mandatory: correct and run the
+reported unindented example, retain editor focus, selection indentation and undo/copy.
+Do not replace the keymap or enable completion/AI.

@@ -103,8 +103,9 @@ Python errors return to Run code rather than Retry.
 ## Bracket assistance decision — 2026-10-23 (#29)
 
 The product owner approved automatic bracket closing and matching. Typing a closer
-before an auto-inserted closer skips it; Backspace removes an empty pair. Avoid
-unwanted pairing in Python comments/string text. The product owner subsequently
+before an auto-inserted closer skips it; Backspace removes an empty pair.
+The original comment/string filtering requirement is superseded by #43 below.
+The product owner subsequently
 approved quote closing in the same item: retain native Python-aware single/double,
 prefix and triple-quote handling, closer skipping and empty-pair deletion. Keep matching and mismatch
 indications readable in both themes, the keyboard navigation agreement below, exact copying
@@ -146,7 +147,7 @@ design or PR. Do not count fewer packages or more tests as improvements by thems
 The simplicity review retains Vite and the existing worker/input/output mechanisms;
 implementation follow-ups are #42–#45. Existing accepted behaviour, including the
 literal/comment bracket policy, remains binding until a product-owner decision
-changes it. This amendment does not implement those follow-ups. See
+changes it (the later #43 decision below supersedes that policy). This amendment does not implement those follow-ups. See
 [design decisions](../docs/design-decisions.md) for concrete rationale and open
 choices. The existing independent review and human merge/publication gates remain.
 
@@ -173,3 +174,16 @@ copies. Current instructions link to these sources instead of repeating exact
 versions. Preserve exact versions in dated evidence and generated lockfiles.
 The fixed version in pyproject.toml is required development-tool project metadata,
 not an application release version; do not synchronise it with package.json.
+
+## Native bracket defaults decision — 2026-10-27 (#43)
+
+The product owner accepts CodeMirror's native Python bracket/quote pairing,
+including contextual automatic closers in comments and literal string text,
+instead of a custom grammar-aware filter. This supersedes the comment/string
+exception under #29; see the [comparison evidence](001-python-editor/evidence/bracket-policy.md).
+The acceptance explicitly preserves the #36 keyboard agreement: Tab indents by
+four spaces, Shift+Tab dedents, and native Escape–Tab remains available without
+a visible hint. Do not replace the keymap or add a library setup/completion preset.
+Keep quote/prefix/triple-quote help, matching cues, exact copying, undo/redo,
+themes and runtime behaviour. This decision authorises implementation, not merge
+or publication.
