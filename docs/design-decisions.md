@@ -67,3 +67,27 @@ stylesheet overrides. The focused selection selector matches the specificity of
 CodeMirror's documented selection-layer structure; regression checks cover actual
 rendered selection in both modes and after blur. Visual comparisons are reviewed
 locally before merge; this record does not introduce new product behaviour.
+
+## Runtime metadata and generated assets (#44)
+
+The exact Pyodide dependency in package.json owns the runtime version.
+`runtime-config.js` derives the served path and declares deployed-file SHA-256
+pins; packaging and the browser network audit consume the same metadata. Vite inserts
+only the derived path into the client, keeping package/tooling metadata out of the
+browser bundle. The
+installed package must match the declared version. Per-file pins remain an
+intentional second check beyond npm archive integrity: unexpected deployed bytes
+fail the build before previous generated output is changed.
+
+Only the named runtime assets inside numeric release directories under
+`public/runtime/` are owned generated files. Packaging removes those assets from
+previous/current versions, removes empty directories, then writes verified inputs.
+It preserves unrelated files, credentials, notices and licences; it refuses numeric
+version-directory symlinks rather than following them. Unrelated files are not
+classified as obsolete generated runtime content. Vite regenerates dist normally.
+
+For an upgrade, deliberately update the exact package dependency and npm lockfile,
+review/update file pins and runtime licence notices, then build and run runtime
+and browser regressions. There is no separate path/version literal to update.
+A clean build and a build with prior generated releases must contain the same
+runtime assets. This cleanup does not upgrade Pyodide or change worker/input/Stop.

@@ -2,7 +2,7 @@
 
 Builds copy the unmodified Pyodide 314.0.7 core from the exact npm dependency,
 whose archive integrity is pinned in package-lock.json. Per-file SHA-256 checks
-are in scripts/vendor-runtime.mjs. Generated runtime binaries are excluded from
+are in runtime-config.js. Generated runtime binaries are excluded from
 Git but included in dist by Vite. The build needs no runtime CDN download.
 
 Pyodide is © the Pyodide contributors, Mozilla Public License 2.0; see

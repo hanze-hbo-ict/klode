@@ -1,3 +1,4 @@
+import { runtimePath, runtimeHashes } from '../../runtime-config.js';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:http';
@@ -215,8 +216,8 @@ try {
   assert.equal(await storagePage.evaluate(() => window.storageReads), 0);
   passed.push('blocked storage needs no warning; editing/execution work without storage access');
   assert.deepEqual(errors, []); assert.deepEqual(blocked, []);
-  for (const file of ['pyodide.mjs', 'pyodide.asm.mjs', 'pyodide.asm.wasm', 'python_stdlib.zip', 'pyodide-lock.json']) {
-    assert.ok(requests.includes(`${origin}/runtime/314.0.7/${file}`), `Missing runtime request ${file}`);
+  for (const file of Object.keys(runtimeHashes)) {
+    assert.ok(requests.includes(`${origin}${runtimePath}${file}`), `Missing runtime request ${file}`);
   }
   passed.push('cold context same-origin worker/runtime audit');
   await run('input("Keyboard stop: ")'); await state('waiting-for-input');
