@@ -1,16 +1,9 @@
 import assert from 'node:assert/strict';
-import { spawn } from 'node:child_process';
-import { chromium } from 'playwright-core';
-import { waitForPreview } from '../support/preview-ready.mjs';
-const preview = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'preview', '--host', '127.0.0.1', '--port', '4275'], { stdio: 'pipe' });
-let browser;
+import { withBrowser } from '../support/browser-test.mjs';
 const passed = [];
-try {
-  await waitForPreview(preview, 'http://127.0.0.1:4275/');
-  browser = await chromium.launch({ executablePath: process.env.CHROME_BIN || '/opt/google/chrome/chrome', headless: true,
-    args: process.getuid?.() === 0 ? ['--no-sandbox'] : [] });
+await withBrowser(async ({ browser, origin }) => {
   const page = await browser.newPage({ permissions: ['clipboard-read', 'clipboard-write'], viewport: { width: 1280, height: 720 } });
-  await page.goto('http://127.0.0.1:4275/');
+  await page.goto(origin);
   const editor = page.locator('.cm-content');
   const code = 'value = "hello" if True else ""   # note\nnumber = 42               \nprint(value)              \n# outside                 ';
   async function select(kind) {
@@ -77,4 +70,4 @@ try {
     }
   }
   console.log(JSON.stringify({ result: 'pass', browser: browser.version(), cases: passed }, null, 2));
-} finally { await browser?.close(); preview.kill(); }
+});

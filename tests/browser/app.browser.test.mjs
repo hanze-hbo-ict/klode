@@ -1,19 +1,11 @@
 import { runtimePath, runtimeHashes } from '../../runtime-config.js';
 import assert from 'node:assert/strict';
-import { spawn } from 'node:child_process';
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
-import { chromium } from 'playwright-core';
-import { waitForPreview } from '../support/preview-ready.mjs';
+import { withBrowser } from '../support/browser-test.mjs';
 import { waitForEditorTheme } from '../support/editor-appearance.mjs';
-const port = 4275, origin = `http://127.0.0.1:${port}`;
-const preview = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'preview', '--host', '127.0.0.1', '--port', String(port)], { stdio: 'pipe' });
-let browser, negative;
 const passed = [];
-try {
-  await waitForPreview(preview, `${origin}/`);
-  browser = await chromium.launch({ executablePath: process.env.CHROME_BIN || '/opt/google/chrome/chrome', headless: true,
-    args: process.getuid?.() === 0 ? ['--no-sandbox'] : [] });
+await withBrowser(async ({ browser, origin }) => {
   const context = await browser.newContext({ serviceWorkers: 'block', permissions: ['clipboard-read', 'clipboard-write'], viewport: { width: 1280, height: 900 } });
   const requests = [], blocked = [], errors = [];
   context.on('request', (request) => requests.push(request.url()));
@@ -240,12 +232,14 @@ try {
   assert.equal(await retryPage.getByRole('button', { name: 'Run code', exact: true }).isEnabled(), true);
   await retryContext.close(); passed.push('failed worker offers Retry, recovers runtime and preserves edited source');
   const html = (await readFile('dist/index.html', 'utf8')).replaceAll('src="/assets/', `src="${origin}/assets/`).replaceAll('href="/assets/', `href="${origin}/assets/`);
-  negative = createServer((req, res) => { res.setHeader('Content-Type', 'text/html'); res.end(html); });
-  await new Promise((resolve) => negative.listen(4276, '127.0.0.1', resolve));
-  const negativePage = await browser.newPage(); await negativePage.goto('http://127.0.0.1:4276');
-  await negativePage.waitForFunction(() => document.querySelector('#status').dataset.state === 'failed');
-  assert.match(await negativePage.locator('#error').textContent(), /provided secure link/); assert.equal(await negativePage.getByRole('button', { name: 'Retry', exact: true }).isEnabled(), true); passed.push('missing isolation capability failure');
-  console.log(JSON.stringify({ result: 'pass', browser: browser.version(), cases: passed, requests: [...new Set(requests)] }, null, 2));
-} finally {
-  await browser?.close(); if (negative) await new Promise((resolve) => negative.close(resolve)); preview.kill();
-}
+  const negative = createServer((req, res) => { res.setHeader('Content-Type', 'text/html'); res.end(html); });
+  try {
+    await new Promise((resolve, reject) => { negative.once('error', reject); negative.listen(0, '127.0.0.1', resolve); });
+    const negativePage = await browser.newPage(); await negativePage.goto(`http://127.0.0.1:${negative.address().port}`);
+    await negativePage.waitForFunction(() => document.querySelector('#status').dataset.state === 'failed');
+    assert.match(await negativePage.locator('#error').textContent(), /provided secure link/); assert.equal(await negativePage.getByRole('button', { name: 'Retry', exact: true }).isEnabled(), true); passed.push('missing isolation capability failure');
+    console.log(JSON.stringify({ result: 'pass', browser: browser.version(), cases: passed, requests: [...new Set(requests)] }, null, 2));
+  } finally {
+    if (negative?.listening) await new Promise((resolve) => negative.close(resolve));
+  }
+});
