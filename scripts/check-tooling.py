@@ -10,6 +10,27 @@ import tomllib
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def check_cloudflare_headers(host):
+    """Cloudflare Pages must send exactly the Netlify headers for every path."""
+    netlify = [rule for rule in host["headers"] if rule["for"] == "/*"]
+    if len(netlify) != 1:
+        raise ValueError("netlify.toml must have exactly one /* header rule")
+    expected = {k.lower(): v for k, v in netlify[0]["values"].items()}
+    actual, path = {}, None
+    for line in (ROOT / "cloudflare/_headers").read_text().splitlines():
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        if not line[0].isspace():
+            path = line.strip()
+            continue
+        if path != "/*":
+            raise ValueError(f"cloudflare/_headers has an unexpected rule: {path}")
+        name, value = line.split(":", 1)
+        actual[name.strip().lower()] = value.strip()
+    if actual != expected:
+        raise ValueError("cloudflare/_headers must match the netlify.toml headers")
+
+
 def main():
     tracked = subprocess.check_output(
         ["git", "ls-files", "-z"], cwd=ROOT
@@ -26,6 +47,7 @@ def main():
     npm = package["packageManager"].removeprefix("npm@")
     if host["build"]["environment"]["NPM_VERSION"] != npm:
         raise ValueError("Netlify NPM_VERSION must match package.json packageManager")
+    check_cloudflare_headers(host)
 
     count = 0
     for manifest in sorted((ROOT / ".specify/integrations").glob("*.manifest.json")):

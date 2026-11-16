@@ -68,6 +68,39 @@ independent review remain mandatory before exam-use release; see the dated
 continuation decision in the feature specification. The product editor is at
 `/`; application browser regressions now cover the former spike cases.
 
+## Cloudflare Pages (alongside Netlify)
+
+The product owner decided on 2026-11-16 to also host Klode on Cloudflare Pages,
+alongside Netlify, like the sibling apps (#57). Netlify and `https://klode.app`
+are unchanged. The Pages deployment is https://klode.pages.dev/.
+
+`.github/workflows/deploy-cloudflare.yml` deploys the approved `main` commit
+only after the Application workflow passes on a push to `main`, or by manual
+dispatch on `main`. It builds with the same pinned Node/npm, copies
+`cloudflare/_headers` into `dist/` and runs `wrangler pages deploy` for
+project `klode`, branch `main`. There are no branch or PR previews. Afterwards
+it checks COOP/COEP on the root, the worker and the `.wasm` runtime file, and
+checks the `.wasm` and worker MIME types on the deployment URL.
+
+`cloudflare/_headers` is kept outside `public/` on purpose. Netlify also reads
+`dist/_headers`, and would otherwise apply the headers twice. The tooling check
+requires it to match the `netlify.toml` headers exactly.
+
+One-time setup by the product owner:
+
+1. Create the Pages project:
+   `npx wrangler pages project create klode --production-branch main`,
+   or create it in the dashboard as a Direct Upload project. Do not connect
+   it to Git, or Cloudflare would build every branch itself.
+2. Create an API token with the "Cloudflare Pages: Edit" permission.
+3. Add the repository secrets `CLOUDFLARE_API_TOKEN` and
+   `CLOUDFLARE_ACCOUNT_ID`.
+4. Run the workflow once with "Run workflow" on `main`, or wait for the next
+   merge.
+
+The release verification below applies to the Pages URL as well. Record the
+Pages deployment URL and commit instead of the Netlify deployment ID.
+
 ## Release verification
 
 After an approved deployment, record the Netlify deployment ID, exact Git commit,
