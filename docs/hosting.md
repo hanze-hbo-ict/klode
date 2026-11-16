@@ -68,6 +68,47 @@ independent review remain mandatory before exam-use release; see the dated
 continuation decision in the feature specification. The product editor is at
 `/`; application browser regressions now cover the former spike cases.
 
+## Cloudflare Pages (alongside Netlify)
+
+The product owner decided on 2026-11-16 to also host Klode on Cloudflare Pages,
+alongside Netlify, like the sibling apps (#57). Netlify and `https://klode.app`
+are unchanged. The Pages deployment is https://klode.pages.dev/.
+
+The product owner chose Cloudflare's Git integration: Cloudflare builds and
+deploys each push to `main` itself, as Netlify does. Like Netlify, it does not
+wait for the GitHub checks. Branch and PR previews are switched off.
+
+Cloudflare installs the locked dependencies itself with `npm ci`. Its npm
+version is not pinned to `packageManager`, unlike Netlify and CI. The build
+command runs `npm run build` and copies `cloudflare/_headers` into `dist/`.
+Cloudflare Pages does not read `netlify.toml`, and without that file the editor
+is not cross-origin isolated.
+
+`cloudflare/_headers` is kept outside `public/` on purpose. Netlify also reads
+`dist/_headers`, and would otherwise apply the headers twice. The tooling check
+requires it to match the `netlify.toml` headers exactly.
+
+One-time setup by the product owner, in Workers & Pages → Create → Pages →
+Connect to Git:
+
+| Setting | Value |
+|---|---|
+| Repository | `hanze-hbo-ict/klode` |
+| Project name | `klode` |
+| Production branch | `main` |
+| Framework preset | None |
+| Build command | `npm run build && cp cloudflare/_headers dist/_headers` |
+| Build output directory | `dist` |
+| Root directory | empty (repository root) |
+
+Node comes from [.node-version](../.node-version). Do not set `NODE_ENV` to
+`production`. After creating the project, open Settings → Builds & deployments
+→ Branch control and set preview deployments to **None**. Until that setting is
+saved, Cloudflare may build preview deployments of other branches.
+
+The release verification below applies to the Pages URL as well. Record the
+Pages deployment ID and commit instead of the Netlify deployment ID.
+
 ## Release verification
 
 After an approved deployment, record the Netlify deployment ID, exact Git commit,
