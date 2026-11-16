@@ -78,9 +78,11 @@ The product owner chose Cloudflare's Git integration: Cloudflare builds and
 deploys each push to `main` itself, as Netlify does. Like Netlify, it does not
 wait for the GitHub checks. Branch and PR previews are switched off.
 
-`scripts/build-cloudflare.sh` is the build command. It installs locked
-dependencies with the npm version pinned in `package.json`, runs
-`npm run build` and copies `cloudflare/_headers` into `dist/`.
+Cloudflare installs the locked dependencies itself with `npm ci`. Its npm
+version is not pinned to `packageManager`, unlike Netlify and CI. The build
+command runs `npm run build` and copies `cloudflare/_headers` into `dist/`.
+Cloudflare Pages does not read `netlify.toml`, and without that file the editor
+is not cross-origin isolated.
 
 `cloudflare/_headers` is kept outside `public/` on purpose. Netlify also reads
 `dist/_headers`, and would otherwise apply the headers twice. The tooling check
@@ -95,10 +97,9 @@ Connect to Git:
 | Project name | `klode` |
 | Production branch | `main` |
 | Framework preset | None |
-| Build command | `bash scripts/build-cloudflare.sh` |
+| Build command | `npm run build && cp cloudflare/_headers dist/_headers` |
 | Build output directory | `dist` |
 | Root directory | empty (repository root) |
-| Environment variable | `SKIP_DEPENDENCY_INSTALL` = `1` (the build command installs) |
 
 Node comes from [.node-version](../.node-version). Do not set `NODE_ENV` to
 `production`. After creating the project, open Settings → Builds & deployments
