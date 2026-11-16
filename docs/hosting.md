@@ -74,32 +74,39 @@ The product owner decided on 2026-11-16 to also host Klode on Cloudflare Pages,
 alongside Netlify, like the sibling apps (#57). Netlify and `https://klode.app`
 are unchanged. The Pages deployment is https://klode.pages.dev/.
 
-`.github/workflows/deploy-cloudflare.yml` deploys the approved `main` commit
-only after the Application workflow passes on a push to `main`, or by manual
-dispatch on `main`. It builds with the same pinned Node/npm, copies
-`cloudflare/_headers` into `dist/` and runs `wrangler pages deploy` for
-project `klode`, branch `main`. There are no branch or PR previews. Afterwards
-it checks COOP/COEP on the root, the worker and the `.wasm` runtime file, and
-checks the `.wasm` and worker MIME types on the deployment URL.
+The product owner chose Cloudflare's Git integration: Cloudflare builds and
+deploys each push to `main` itself, as Netlify does. Like Netlify, it does not
+wait for the GitHub checks. Branch and PR previews are switched off.
+
+`scripts/build-cloudflare.sh` is the build command. It installs locked
+dependencies with the npm version pinned in `package.json`, runs
+`npm run build` and copies `cloudflare/_headers` into `dist/`.
 
 `cloudflare/_headers` is kept outside `public/` on purpose. Netlify also reads
 `dist/_headers`, and would otherwise apply the headers twice. The tooling check
 requires it to match the `netlify.toml` headers exactly.
 
-One-time setup by the product owner:
+One-time setup by the product owner, in Workers & Pages → Create → Pages →
+Connect to Git:
 
-1. Create the Pages project:
-   `npx wrangler pages project create klode --production-branch main`,
-   or create it in the dashboard as a Direct Upload project. Do not connect
-   it to Git, or Cloudflare would build every branch itself.
-2. Create an API token with the "Cloudflare Pages: Edit" permission.
-3. Add the repository secrets `CLOUDFLARE_API_TOKEN` and
-   `CLOUDFLARE_ACCOUNT_ID`.
-4. Run the workflow once with "Run workflow" on `main`, or wait for the next
-   merge.
+| Setting | Value |
+|---|---|
+| Repository | `hanze-hbo-ict/klode` |
+| Project name | `klode` |
+| Production branch | `main` |
+| Framework preset | None |
+| Build command | `bash scripts/build-cloudflare.sh` |
+| Build output directory | `dist` |
+| Root directory | empty (repository root) |
+| Environment variable | `SKIP_DEPENDENCY_INSTALL` = `1` (the build command installs) |
+
+Node comes from [.node-version](../.node-version). Do not set `NODE_ENV` to
+`production`. After creating the project, open Settings → Builds & deployments
+→ Branch control and set preview deployments to **None**. Until that setting is
+saved, Cloudflare may build preview deployments of other branches.
 
 The release verification below applies to the Pages URL as well. Record the
-Pages deployment URL and commit instead of the Netlify deployment ID.
+Pages deployment ID and commit instead of the Netlify deployment ID.
 
 ## Release verification
 
