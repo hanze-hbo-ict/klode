@@ -1,8 +1,10 @@
-# Netlify hosting and verification
+# Hosting and verification
 
-The product owner selected Netlify on 2026-10-22 and the public editor is live at
-https://klode.app/. Configuration is tracked in `netlify.toml` under
-issue #17 (parent #4). Record exact deployment metadata and account settings
+The public editor is live at https://klode.app/, served by Cloudflare Pages since
+2026-11-16 (#57). The product owner originally selected Netlify on 2026-10-22
+(#17, parent #4). Netlify keeps building `main` alongside Cloudflare Pages, at
+https://klode.netlify.app/, but no longer serves `klode.app`. The Netlify
+sections below remain valid for that deployment. Record exact deployment metadata and account settings
 separately; the public URL alone does not establish every operational setting.
 
 ## Connect the repository
@@ -68,11 +70,13 @@ independent review remain mandatory before exam-use release; see the dated
 continuation decision in the feature specification. The product editor is at
 `/`; application browser regressions now cover the former spike cases.
 
-## Cloudflare Pages (alongside Netlify)
+## Cloudflare Pages (primary)
 
-The product owner decided on 2026-11-16 to also host Klode on Cloudflare Pages,
-alongside Netlify, like the sibling apps (#57). Netlify and `https://klode.app`
-are unchanged. The Pages deployment is https://klode.pages.dev/.
+The product owner decided on 2026-11-16 to host Klode on Cloudflare Pages, like
+the sibling apps (#57). The same day, they pointed `klode.app` and
+`www.klode.app` at the Pages project. Cloudflare manages both the DNS zone and
+the custom domains. `www.klode.app` redirects to `https://klode.app/`. The
+Pages deployment is also reachable at https://klode.pages.dev/.
 
 The product owner chose Cloudflare's Git integration: Cloudflare builds and
 deploys each push to `main` itself, as Netlify does. Like Netlify, it does not
@@ -106,12 +110,12 @@ Node comes from [.node-version](../.node-version). Do not set `NODE_ENV` to
 → Branch control and set preview deployments to **None**. Until that setting is
 saved, Cloudflare may build preview deployments of other branches.
 
-The release verification below applies to the Pages URL as well. Record the
-Pages deployment ID and commit instead of the Netlify deployment ID.
+The release verification below applies to `https://klode.app/`, which is the
+Pages deployment.
 
 ## Release verification
 
-After an approved deployment, record the Netlify deployment ID, exact Git commit,
+After an approved deployment, record the Cloudflare Pages deployment ID, exact Git commit,
 build/runtime versions and URL. Confirm the published root is the Klode editor,
 not the isolated spike. Verify HTTPS plus COOP/COEP headers on root HTML, worker
 JavaScript and runtime responses; `.wasm` must use `application/wasm` and `.mjs`
@@ -126,11 +130,11 @@ survive Run/errors/Stop/theme changes. Historical recovery checks describe only
 their original commits. Observe all five runtime requests on the editor origin;
 there must be no runtime CDN or package-install request. Native copy into ans.app
 and the actual Windows/Edge school whitelist remain separate acceptance evidence
-in #13, not implied by successful Netlify smoke tests.
+in #13, not implied by successful hosting smoke tests.
 
 If build or live verification fails, stop and report the deployment/commit and
 failure in #17; do not claim release completion. Local tests validate the committed
-configuration/build but do not prove Netlify response headers or account settings.
+configuration/build but do not prove live response headers or hosting account settings.
 
 Sources: [build configuration](https://docs.netlify.com/build/configure-builds/overview/),
 [dependencies](https://docs.netlify.com/build/configure-builds/manage-dependencies/) and
