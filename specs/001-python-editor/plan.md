@@ -3,7 +3,7 @@
 **Branch**: `001-python-editor` | **Date**: 2026-10-22 | **Spec**: [spec.md](spec.md)
 **Input**: Product-owner decisions under #3 and feedback #19–#24; constitution v1.0.1.
 **Status**: Revised feedback plan; actual school acceptance remains pending.
-Public Netlify deployment exists; revised changes still require review/human merge.
+Public deployment exists (Cloudflare Pages since 2026-11-16, previously Netlify); revised changes still require review/human merge.
 
 ## Summary
 
@@ -51,7 +51,8 @@ LAN HTTPS use in a Windows/Edge VM. Under the continuation decision below, local
 UI implementation may proceed. Actual school browser, opening route, whitelist
 and candidate HTTPS host evidence remain an acceptance/exam-use release gate.
 No silent fallback to preloaded input or an unapproved CDN.
-Netlify is the selected public host. Revised deployments must follow the human
+Cloudflare Pages is the public host since 2026-11-16 (#57); Netlify was selected on
+2026-10-22 and still builds alongside. Revised deployments must follow the human
 gate; preparing this plan does not authorise publication. Coordinate provisioning
 with #4 and report a blocker if the actual-environment gate cannot be executed.
 

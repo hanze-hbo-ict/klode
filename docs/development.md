@@ -80,6 +80,6 @@ environment and bundled Spec Kit files. See
 limitations of the merge gate.
 
 The public editor is live at https://klode.app/. See
-[hosting and release verification](hosting.md) for Netlify configuration and
+[hosting and release verification](hosting.md) for Cloudflare Pages/Netlify configuration and
 remaining operational/school-environment checks, and [CONTRIBUTING](../CONTRIBUTING.md)
 for the contributor workflow.
