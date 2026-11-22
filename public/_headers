@@ -1,0 +1,6 @@
+# Response headers for Cloudflare Pages, which reads dist/_headers (Vite copies
+# this file there). The only source for these headers: vite.config.js reads the
+# /* rule for dev and preview, and scripts/check-tooling.py checks it.
+/*
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: require-corp

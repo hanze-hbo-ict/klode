@@ -1,7 +1,0 @@
-# Cloudflare Pages response headers (copied into dist/ by the Cloudflare build command, see docs/hosting.md).
-# Kept outside public/ so Netlify, which also reads dist/_headers, does not
-# apply these on top of netlify.toml. Keep in sync with netlify.toml; checked
-# by scripts/check-tooling.py.
-/*
-  Cross-Origin-Opener-Policy: same-origin
-  Cross-Origin-Embedder-Policy: require-corp

@@ -1,35 +1,8 @@
 # Hosting and verification
 
 The public editor is live at https://klode.app/, served by Cloudflare Pages since
-2026-11-16 (#57). The product owner originally selected Netlify on 2026-10-22
-(#17, parent #4). Netlify keeps building `main` alongside Cloudflare Pages, at
-https://klode.netlify.app/, but no longer serves `klode.app`. The Netlify
-sections below remain valid for that deployment. Record exact deployment metadata and account settings
+2026-11-16 (#57). Record exact deployment metadata and account settings
 separately; the public URL alone does not establish every operational setting.
-
-## Connect the repository
-
-Connect `hanze-hbo-ict/klode` and use production branch `main`. Leave the base
-directory empty (repository root). The committed configuration sets build command
-`npm run build` and publish directory `dist`. Node comes from
-[.node-version](../.node-version); npm is declared in
-[package.json](../package.json) (`packageManager`). This setup retains
-an explicit `NPM_VERSION` copy in `netlify.toml`, checked by the tooling workflow. Remove
-any dashboard `NODE_VERSION` override so the committed file takes effect. No application
-secrets or runtime environment variables are required. Do not set `NODE_ENV` to
-`production` during dependency installation: build dependencies must be installed.
-The build verifies/packages the pinned Python runtime before running Vite.
-
-Enable production builds only for the human-approved main version; disable branch
-deploys and deploy
-previews for unapproved branches unless the product owner authorises a preview.
-A merge decision authorises publication of the approved version; failed release
-checks stop further publication. Record the deployed commit and verification
-results for each approved release.
-
-`netlify.toml` applies COOP/COEP to all static responses. Vite dev/preview headers
-alone do not configure Netlify. Netlify provides HTTPS; no local test CA should be
-uploaded or imported for the public site.
 
 ## Static hosting contract
 
@@ -47,7 +20,7 @@ Cross-Origin-Embedder-Policy: require-corp
 Both window and module worker must report `crossOriginIsolated === true`.
 SharedArrayBuffer and worker Atomics.wait are essential: a missing capability
 produces a visible failure rather than a preloaded-input fallback. Vite dev AND
-preview set both headers. HTTP localhost is a browser secure-context exception
+preview send the same headers. HTTP localhost is a browser secure-context exception
 for local testing; this is not evidence for a production HTTPS origin.
 
 All startup resources are bundled on the same editor origin. `npm ci` downloads
@@ -70,27 +43,34 @@ independent review remain mandatory before exam-use release; see the dated
 continuation decision in the feature specification. The product editor is at
 `/`; application browser regressions now cover the former spike cases.
 
-## Cloudflare Pages (primary)
+## Cloudflare Pages
 
 The product owner decided on 2026-11-16 to host Klode on Cloudflare Pages, like
 the sibling apps (#57). The same day, they pointed `klode.app` and
 `www.klode.app` at the Pages project. Cloudflare manages both the DNS zone and
 the custom domains. `www.klode.app` redirects to `https://klode.app/`. The
-Pages deployment is also reachable at https://klode.pages.dev/.
+Pages deployment is also reachable at https://klode.pages.dev/. Cloudflare
+provides HTTPS; no local test CA should be uploaded or imported for the public
+site.
 
 The product owner chose Cloudflare's Git integration: Cloudflare builds and
-deploys each push to `main` itself, as Netlify does. Like Netlify, it does not
-wait for the GitHub checks. Branch and PR previews are switched off.
+deploys each push to `main` itself. It does not wait for the GitHub checks.
+Branch and PR previews are switched off: only the human-approved `main` is
+published. A merge decision authorises publication of the approved version;
+failed release checks stop further publication. Record the deployed commit and
+verification results for each approved release.
 
-Cloudflare installs the locked dependencies itself with `npm ci`. Its npm
-version is not pinned to `packageManager`, unlike Netlify and CI. The build
-command runs `npm run build` and copies `cloudflare/_headers` into `dist/`.
-Cloudflare Pages does not read `netlify.toml`, and without that file the editor
-is not cross-origin isolated.
+Cloudflare installs the locked dependencies itself with `npm ci`. Node comes
+from [.node-version](../.node-version). Its npm version is not pinned to
+`packageManager` in [package.json](../package.json), unlike CI. No application
+secrets or runtime environment variables are required. Do not set `NODE_ENV` to
+`production`: build dependencies must be installed. The build verifies and
+packages the pinned Python runtime before running Vite.
 
-`cloudflare/_headers` is kept outside `public/` on purpose. Netlify also reads
-`dist/_headers`, and would otherwise apply the headers twice. The tooling check
-requires it to match the `netlify.toml` headers exactly.
+[`public/_headers`](../public/_headers) sets COOP/COEP on every path. Vite copies
+it into `dist/`, where Cloudflare Pages applies it; without it the editor is not
+cross-origin isolated. Vite dev and preview read the same file, and the tooling
+check requires exactly the headers below.
 
 One-time setup by the product owner, in Workers & Pages → Create → Pages →
 Connect to Git:
@@ -101,17 +81,13 @@ Connect to Git:
 | Project name | `klode` |
 | Production branch | `main` |
 | Framework preset | None |
-| Build command | `npm run build && cp cloudflare/_headers dist/_headers` |
+| Build command | `npm run build` |
 | Build output directory | `dist` |
 | Root directory | empty (repository root) |
 
-Node comes from [.node-version](../.node-version). Do not set `NODE_ENV` to
-`production`. After creating the project, open Settings → Builds & deployments
-→ Branch control and set preview deployments to **None**. Until that setting is
-saved, Cloudflare may build preview deployments of other branches.
-
-The release verification below applies to `https://klode.app/`, which is the
-Pages deployment.
+After creating the project, open Settings → Builds & deployments → Branch
+control and set preview deployments to **None**. Until that setting is saved,
+Cloudflare may build preview deployments of other branches.
 
 ## Release verification
 
@@ -136,6 +112,6 @@ If build or live verification fails, stop and report the deployment/commit and
 failure in #17; do not claim release completion. Local tests validate the committed
 configuration/build but do not prove live response headers or hosting account settings.
 
-Sources: [build configuration](https://docs.netlify.com/build/configure-builds/overview/),
-[dependencies](https://docs.netlify.com/build/configure-builds/manage-dependencies/) and
-[custom headers](https://docs.netlify.com/manage/routing/headers/).
+Sources: [Git integration](https://developers.cloudflare.com/pages/configuration/git-integration/),
+[build configuration](https://developers.cloudflare.com/pages/configuration/build-configuration/) and
+[headers](https://developers.cloudflare.com/pages/configuration/headers/).

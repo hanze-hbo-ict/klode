@@ -40,8 +40,8 @@ workflow or an ans.app integration.
 ## Proposed technical direction
 
 Pyodide in a Web Worker, an established editor library and all required assets
-served from an allowed origin. The product owner selected Netlify on 2026-10-22,
-and moved https://klode.app/ to Cloudflare Pages on 2026-11-16 (#57). Feasibility must be demonstrated on an actual exam
+served from an allowed origin. https://klode.app/ is hosted on Cloudflare Pages
+since 2026-11-16 (#57). Feasibility must be demonstrated on an actual exam
 laptop with the whitelist in effect, including a cold load without cached assets.
 A URL whitelist is restricted connectivity, not a requirement for fully offline use.
 
