@@ -10,25 +10,27 @@ import tomllib
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def check_cloudflare_headers(host):
-    """Cloudflare Pages must send exactly the Netlify headers for every path."""
-    netlify = [rule for rule in host["headers"] if rule["for"] == "/*"]
-    if len(netlify) != 1:
-        raise ValueError("netlify.toml must have exactly one /* header rule")
-    expected = {k.lower(): v for k, v in netlify[0]["values"].items()}
-    actual, path = {}, None
-    for line in (ROOT / "cloudflare/_headers").read_text().splitlines():
+# The hosting contract (docs/hosting.md): these headers on every path.
+ISOLATION_HEADERS = {
+    "cross-origin-opener-policy": "same-origin",
+    "cross-origin-embedder-policy": "require-corp",
+}
+
+
+def check_headers():
+    """public/_headers must send exactly the isolation headers on every path."""
+    rules, path = {}, None
+    for line in (ROOT / "public/_headers").read_text().splitlines():
         if not line.strip() or line.lstrip().startswith("#"):
             continue
         if not line[0].isspace():
             path = line.strip()
+            rules[path] = {}
             continue
-        if path != "/*":
-            raise ValueError(f"cloudflare/_headers has an unexpected rule: {path}")
         name, value = line.split(":", 1)
-        actual[name.strip().lower()] = value.strip()
-    if actual != expected:
-        raise ValueError("cloudflare/_headers must match the netlify.toml headers")
+        rules[path][name.strip().lower()] = value.strip()
+    if rules != {"/*": ISOLATION_HEADERS}:
+        raise ValueError("public/_headers must have one /* rule with exactly the isolation headers")
 
 
 def main():
@@ -42,12 +44,7 @@ def main():
         elif path.suffix == ".toml" or path.name == "uv.lock":
             tomllib.loads(path.read_text())
 
-    package = json.loads((ROOT / "package.json").read_text())
-    host = tomllib.loads((ROOT / "netlify.toml").read_text())
-    npm = package["packageManager"].removeprefix("npm@")
-    if host["build"]["environment"]["NPM_VERSION"] != npm:
-        raise ValueError("Netlify NPM_VERSION must match package.json packageManager")
-    check_cloudflare_headers(host)
+    check_headers()
 
     count = 0
     for manifest in sorted((ROOT / ".specify/integrations").glob("*.manifest.json")):

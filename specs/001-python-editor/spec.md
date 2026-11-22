@@ -232,7 +232,8 @@ reported separately from actual exam-laptop evidence.
 ## Assumptions
 
 - The product owner provides or confirms the remaining exam test details.
-- Netlify hosts the public editor; actual school-whitelist validation remains open.
+- Cloudflare Pages hosts the public editor at https://klode.app/ (since 2026-11-16, #57);
+  actual school-whitelist validation remains open.
 - A URL whitelist does not require operation with every network connection disabled.
 - Extra packages, user file workflows and graphics are excluded by the accepted
   first-version scope. Account functionality is not part of this feature.
