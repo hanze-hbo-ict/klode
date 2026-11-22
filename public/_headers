@@ -4,3 +4,13 @@
 /*
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Embedder-Policy: require-corp
+
+# Comparison pages of the diagnostics page (#56, public/diagnostics/README.md):
+# only the isolation headers differ. `! Name` removes a header set by /*.
+/diagnostics/credentialless/*
+  ! Cross-Origin-Embedder-Policy
+  Cross-Origin-Embedder-Policy: credentialless
+
+/diagnostics/no-isolation/*
+  ! Cross-Origin-Opener-Policy
+  ! Cross-Origin-Embedder-Policy
