@@ -89,6 +89,42 @@ After creating the project, open Settings → Builds & deployments → Branch
 control and set preview deployments to **None**. Until that setting is saved,
 Cloudflare may build preview deployments of other branches.
 
+## Diagnostics page
+
+`/diagnostics/` is a diagnostics page for environments where Klode does not
+start (#56). It is meant for people without direct access to such an
+environment: someone opens the page there, presses **Run all variants**, and
+copies or downloads the combined JSON report when the last variant has
+finished. It is not linked from the editor and is marked `noindex`.
+
+The page is a self-contained set of static files in `public/diagnostics/`,
+without build step or dependencies, so it can be copied into the sibling apps
+(Kopje, Krash, Krijt). Each copy then belongs to its app.
+[`public/diagnostics/README.md`](../public/diagnostics/README.md) describes the
+checks, the files, `config.json`, the header rules and the report format.
+
+Klode's `config.json` names the editor headers, the Python runtime file to
+check, and an app check that starts Python in a worker
+(`app-check-worker.js`). `scripts/check-tooling.py` checks that its headers
+are the isolation headers above and that its runtime URLs use the declared
+Pyodide version.
+
+The comparison pages differ only in their headers, set by extra rules in
+`public/_headers`:
+
+| Path | COOP | COEP |
+|---|---|---|
+| `/diagnostics/` | `same-origin` | `require-corp` |
+| `/diagnostics/credentialless/` | `same-origin` | `credentialless` |
+| `/diagnostics/no-isolation/` | none | none |
+
+`/diagnostics/isolated/` equals Klode's own headers, so the page skips it and it
+needs no rule. Each page compares the headers it receives with the
+ones it expects and reports a mismatch. Vite dev and preview send only the `/*`
+headers, everywhere, so the browser test expects the no-isolation page to report
+that mismatch. After a deployment, check the live headers of the three paths
+with `curl -sI`.
+
 ## Release verification
 
 After an approved deployment, record the Cloudflare Pages deployment ID, exact Git commit,

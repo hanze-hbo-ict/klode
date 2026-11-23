@@ -1,0 +1,21 @@
+{
+  "app": "Klode",
+  "appURL": "../",
+  "headers": {
+    "Cross-Origin-Opener-Policy": "same-origin",
+    "Cross-Origin-Embedder-Policy": "require-corp"
+  },
+  "resources": [
+    {
+      "label": "Python runtime",
+      "url": "../runtime/314.0.7/pyodide.asm.wasm",
+      "contentType": "application/wasm"
+    }
+  ],
+  "appCheck": {
+    "label": "Python runtime in worker",
+    "worker": "app-check-worker.js",
+    "timeoutSeconds": 120,
+    "options": { "runtime": "../runtime/314.0.7/" }
+  }
+}
